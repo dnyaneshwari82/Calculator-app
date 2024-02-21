@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Calculator</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="calc">
+      <div class="display">
+
+        <div class="display-main">
+          0
+        </div>
+
+        <div class="display-operations">
+          0
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="button ac">ac</button>
+        <button class="button ce">ce</button>
+        <button class="button div">%</button>
+        <button class="button mult">x</button>
+      </div>
+
+      <div class="row">
+        <button class="button seven">7</button>
+        <button class="button eight">8</button>
+        <button class="button nine">9</button>
+        <button class="button minus">-</button>
+      </div>
+
+      <div class="row">
+        <button class="button four">4</button>
+        <button class="button five">5</button>
+        <button class="button six">6</button>
+        <button class="button plus">+</button>
+      </div>
+
+      <div class="bottom-row">
+        <div class="left">
+          <div class="row">
+            <button class="button one">1</button>
+            <button class="button two">2</button>
+            <button class="button three">3</button>
+          </div>
+
+          <div class="row">
+            <button class="button zero">0</button>
+            <button class="button dot">.</button>
+          </div>
+        </div>
+
+        <div class="right">
+          <div class="button eq">=</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const displayMain = document.querySelector('.display-main');
+      const displayOperations = document.querySelector('.display-operations');
+      let currentInput = '0';
+      let currentOperation = '';
+      let currentResult = 0;
+
+      function updateDisplay() {
+        displayMain.textContent = currentInput;
+        displayOperations.textContent = currentOperation;
+      }
+
+      function handleNumberClick(number) {
+        if (currentInput === '0' || currentInput === '-0') {
+          currentInput = number;
+        } else {
+          currentInput += number;
+        }
+        updateDisplay();
+      }
+
+      function handleOperationClick(operation) {
+        if (currentOperation === '') {
+          currentResult = parseFloat(currentInput);
+          currentOperation = operation;
+          currentInput = '0';
+        } else {
+          performCalculation();
+          currentOperation = operation;
+        }
+        updateDisplay();
+      }
+
+      function performCalculation() {
+        const inputValue = parseFloat(currentInput);
+        switch (currentOperation) {
+          case '+':
+            currentResult += inputValue;
+            break;
+          case '-':
+            currentResult -= inputValue;
+            break;
+          case 'x':
+            currentResult *= inputValue;
+            break;
+          case '%':
+            currentResult /= 100;
+            break;
+        }
+        currentInput = '0';
+      }
+
+      function handleEqualsClick() {
+        performCalculation();
+        currentOperation = '';
+        currentInput = currentResult.toString();
+        updateDisplay();
+      }
+
+      function handleClear() {
+        currentInput = '0';
+        currentOperation = '';
+        currentResult = 0;
+        updateDisplay();
+      }
+
+      // Event listeners for number buttons
+      document.querySelectorAll('.button:not(.ac, .ce, .div, .mult, .minus, .plus, .eq)').forEach(button => {
+        button.addEventListener('click', () => {
+          handleNumberClick(button.textContent);
+        });
+      });
+
+      // Event listeners for operation buttons
+      document.querySelectorAll('.button.div, .button.mult, .button.minus, .button.plus').forEach(button => {
+        button.addEventListener('click', () => {
+          handleOperationClick(button.textContent);
+        });
+      });
+
+      // Event listener for equals button
+      document.querySelector('.button.eq').addEventListener('click', handleEqualsClick);
+
+      // Event listener for AC button
+      document.querySelector('.button.ac').addEventListener('click', handleClear);
+
+      // Event listener for CE button
+      document.querySelector('.button.ce').addEventListener('click', () => {
+        currentInput = '0';
+        updateDisplay();
+      });
+    });
+  </script>
+</body>
+
+</html>
